@@ -39,7 +39,6 @@ pub(crate) enum Value {
 
 struct ValueVisitor;
 use serde::de::{self, Visitor};
-use serde::ser;
 
 use std::fmt;
 impl<'de> Visitor<'de> for ValueVisitor {
@@ -55,7 +54,6 @@ impl<'de> Visitor<'de> for ValueVisitor {
     {
         use serde::de::Error;
         let mut r: Result<Value, M::Error> = Err(M::Error::custom("unimplemented"));
-        let mut var: Option<String> = None;
         if let Some(k) = m.next_key::<String>()? {
             match &k {
                 s if s == "^->" => {
