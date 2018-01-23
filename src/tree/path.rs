@@ -13,7 +13,7 @@ where
 {
     fn from(s: T) -> Self {
         let s = s.into();
-        if s == "^" {
+        if s == PARENT_ID {
             Comp::Up
         } else if let Ok(i) = s.parse::<usize>() {
             Comp::Index(i)
@@ -67,7 +67,7 @@ use std::fmt;
 impl fmt::Display for Comp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Comp::Up => write!(f, "^"),
+            Comp::Up => write!(f, "{}", PARENT_ID),
             Comp::Name(ref s) => s.fmt(f),
             Comp::Index(i) => i.fmt(f),
         }
@@ -86,5 +86,31 @@ impl fmt::Display for Path {
         } else {
             s.fmt(f)
         }
+    }
+}
+
+struct PathVisitor;
+use serde::de::{self, Visitor};
+impl<'de> Visitor<'de> for PathVisitor {
+    type Value = Path;
+
+    fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("a string representation of an ink path")
+    }
+    fn visit_str<E>(self, v: &str) -> Result<Path, E>
+    where
+        E: de::Error,
+    {
+        Ok(Path::from(v))
+    }
+}
+
+use serde::Deserialize;
+impl<'de> Deserialize<'de> for Path {
+    fn deserialize<D>(d: D) -> Result<Path, D::Error>
+    where
+        D: de::Deserializer<'de>,
+    {
+        d.deserialize_str(PathVisitor)
     }
 }
