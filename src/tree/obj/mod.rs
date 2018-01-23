@@ -6,10 +6,11 @@ mod value;
 mod divert;
 mod varassign;
 mod varref;
+mod tag;
 
 pub(crate) enum Obj {
     Glue(glue::Glue),
-    Tag(String),
+    Tag(tag::Tag),
     Cmd(cmd::Cmd),
     Divert(divert::Divert),
     VarRef(varref::VarRef),
