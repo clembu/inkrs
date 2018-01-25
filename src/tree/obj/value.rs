@@ -53,7 +53,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
         M: de::MapAccess<'de>,
     {
         use serde::de::Error;
-        let mut r: Result<Value, M::Error> = Err(M::Error::custom("unimplemented"));
+        let mut r: Result<Value, M::Error> = Err(M::Error::custom("bad value map format"));
         if let Some(k) = m.next_key::<String>()? {
             match &k {
                 s if s == "^->" => {
