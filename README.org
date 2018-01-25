@@ -30,7 +30,7 @@ than its first reference, or even outside of the story flow.
    - [-] Maps
      - [X] Variable Pointer Value
      - [X] Divert
-     - [ ] ChoicePoint
+     - [X] ChoicePoint
      - [X] Variable Reference
      - [ ] Variable Assignment
      - [X] Tag
