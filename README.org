@@ -1,0 +1,40 @@
+* inkrs
+
+~inkrs~ is a port of [[https://github.com/inkle/ink][Inkle's Ink]] in [[https://www.rust-lang.org][rust]], not the compiler.
+
+** the parsing tree
+
+When given a story ~.json~ file,
+inkrs will build a ~Story~ structure
+that contains a tree structure
+corresponding to a typed version of the json file.
+
+This parsed tree will contain *unsafe* values.
+For example, a ~variable reference~ to
+an ink variable that has not yet been given a value.
+
+Due to the non-linear nature of an ~ink~ story,
+variables can be initialized much later in the file
+than its first reference, or even outside of the story flow.
+
+** TODO Deserialize
+   - [X] Numbers
+     - [X] Int Value
+     - [X] Float Value
+   - [-] Strings
+     - [X] String Value
+     - [X] Glue
+     - [X] ControlCommand
+     - [ ] Native Function Calls
+     - [X] Void
+   - [-] Maps
+     - [X] Variable Pointer Value
+     - [X] Divert
+     - [ ] ChoicePoint
+     - [X] Variable Reference
+     - [ ] Variable Assignment
+     - [X] Tag
+     - [X] List Value
+     - [ ] Saved Choice
+   - [ ] Sequence
+     - [ ] Container
