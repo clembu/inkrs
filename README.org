@@ -21,11 +21,11 @@ than its first reference, or even outside of the story flow.
    - [X] Numbers
      - [X] Int Value
      - [X] Float Value
-   - [-] Strings
+   - [X] Strings
      - [X] String Value
      - [X] Glue
      - [X] ControlCommand
-     - [ ] Native Function Calls
+     - [X] Native Function Calls
      - [X] Void
    - [-] Maps
      - [X] Variable Pointer Value
