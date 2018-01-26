@@ -36,5 +36,6 @@ than its first reference, or even outside of the story flow.
      - [X] Tag
      - [X] List Value
      - [ ] Saved Choice
-   - [ ] Sequence
-     - [ ] Container
+   - [-] Sequence
+     - [X] Container
+     - [ ] Test Container deser.

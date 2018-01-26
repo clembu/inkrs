@@ -1,12 +1,12 @@
-mod cmd;
-mod glue;
-mod choice;
-mod prim;
-mod value;
-mod divert;
-mod varassign;
-mod varref;
-mod tag;
+pub(crate) mod cmd;
+pub(crate) mod glue;
+pub(crate) mod choice;
+pub(crate) mod prim;
+pub(crate) mod value;
+pub(crate) mod divert;
+pub(crate) mod varassign;
+pub(crate) mod varref;
+pub(crate) mod tag;
 
 #[derive(Debug, PartialEq, Deserialize)]
 #[serde(untagged)]
