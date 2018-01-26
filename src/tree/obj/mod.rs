@@ -1,7 +1,7 @@
 mod cmd;
 mod glue;
 mod choice;
-mod funcall;
+mod prim;
 mod value;
 mod divert;
 mod varassign;
@@ -17,5 +17,5 @@ pub(crate) enum Obj {
     VarAssign(varassign::VarAssign),
     Value(value::Value),
     Choice(choice::Choice),
-    FunCall(funcall::FunCall),
+    Primitive(prim::Prim),
 }

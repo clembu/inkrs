@@ -1,5 +1,5 @@
 #[derive(Debug, PartialEq, Deserialize)]
-pub(crate) enum FunCall {
+pub(crate) enum Prim {
     #[serde(rename = "+")] Add,
     #[serde(rename = "-")] Sub,
     #[serde(rename = "/")] Div,
