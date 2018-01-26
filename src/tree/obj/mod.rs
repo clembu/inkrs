@@ -8,6 +8,8 @@ mod varassign;
 mod varref;
 mod tag;
 
+#[derive(Debug, PartialEq, Deserialize)]
+#[serde(untagged)]
 pub(crate) enum Obj {
     Glue(glue::Glue),
     Tag(tag::Tag),
