@@ -4,10 +4,10 @@ use std::collections::HashMap;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Container {
-    c: Vec<Tree>,
-    named_c: HashMap<String, Container>,
-    flags: u8,
-    name: Option<String>,
+    pub(super) c: Vec<Tree>,
+    pub(super) named_c: HashMap<String, Container>,
+    pub(super) flags: u8,
+    pub(super) name: Option<String>,
 }
 
 impl Container {
@@ -41,7 +41,7 @@ impl<'de> Visitor<'de> for ContainerVisitor {
             }
         }
 
-        if let Some(m) = seq.next_element::<meta::Meta>()? {
+        if let Some(Some(m)) = seq.next_element::<Option<meta::Meta>>()? {
             println!("Deser: {:?}", m);
             Ok(Container {
                 c,
@@ -88,6 +88,7 @@ mod tests_serde {
             &[
                 Token::Seq { len: Some(2) },
                 Token::Str("end"),
+                Token::Some,
                 Token::Map { len: Some(2) },
                 Token::Str("#n"),
                 Token::Str("c"),
