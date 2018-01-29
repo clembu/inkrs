@@ -1,4 +1,4 @@
-use tree::path::Path;
+use de::path::Path;
 
 #[derive(PartialEq, Debug)]
 pub(crate) enum Target {

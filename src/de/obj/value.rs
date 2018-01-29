@@ -1,4 +1,4 @@
-use tree::path::Path;
+use de::path::Path;
 use std::collections::HashMap;
 
 #[derive(PartialEq, Debug)]

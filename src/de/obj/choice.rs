@@ -1,5 +1,5 @@
 //! Corresponds to inkle's ChoicePoint
-use tree::path::Path;
+use de::path::Path;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub(crate) struct Choice {

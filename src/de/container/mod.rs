@@ -1,15 +1,7 @@
 mod meta;
 use self::meta::Meta;
-use super::Tree;
+use super::{Container, Tree};
 use std::collections::HashMap;
-
-#[derive(Debug, PartialEq)]
-pub(crate) struct Container {
-    pub(super) c: Vec<Tree>,
-    pub(super) named_c: HashMap<String, Container>,
-    pub(super) flags: u8,
-    pub(super) name: Option<String>,
-}
 
 impl Container {
     fn set_name(&mut self, n: Option<String>) {
@@ -91,16 +83,15 @@ impl<'de> Deserialize<'de> for Container {
 }
 
 #[cfg(test)]
-mod tests_serde {
-    use super::*;
-    use tree;
+mod test {
+    use super::super::*;
     use serde_test::{assert_de_tokens, Token};
 
     #[test]
     fn de_container() {
         assert_de_tokens(
             &Container {
-                c: vec![Tree::Leaf(tree::obj::Obj::Cmd(tree::obj::cmd::Cmd::End))],
+                c: vec![Tree::Leaf(obj::Obj::Cmd(obj::cmd::Cmd::End))],
                 flags: 0x03,
                 name: Some("c".to_string()),
                 named_c: HashMap::new(),
@@ -125,7 +116,7 @@ mod tests_serde {
         let subc: Container = Container {
             name: Some(String::from("c")),
             flags: 0x03,
-            c: vec![Tree::Leaf(tree::obj::Obj::Cmd(tree::obj::cmd::Cmd::End))],
+            c: vec![Tree::Leaf(obj::Obj::Cmd(obj::cmd::Cmd::End))],
             named_c: HashMap::new(),
         };
         let mut nc: HashMap<String, Container> = HashMap::new();
@@ -134,7 +125,7 @@ mod tests_serde {
             &Container {
                 name: None,
                 flags: 0,
-                c: vec![Tree::Leaf(tree::obj::Obj::Cmd(tree::obj::cmd::Cmd::End))],
+                c: vec![Tree::Leaf(obj::Obj::Cmd(obj::cmd::Cmd::End))],
                 named_c: nc,
             },
             &[

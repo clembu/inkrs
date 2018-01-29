@@ -1,28 +1,44 @@
-/*! This is actually not
- * the Story we're gonna
- * open to the api yet.
- *
- * This thing is just a deserialized
- * uncontextualized data structure.
- *
- * Ideally, we want to transform this
- * into something more strongly coupled
- * with its contents.
- *
- * Like, flagsets being their own types,
- * variable references actually referencing
- * variables, not their names,
- * and so on.
- */
+#[cfg(test)]
+macro_rules! test_unit_variant_de {
+    ($enum:ident, $var:ident, $str: expr) => {
+        assert_de_tokens(
+            &$enum::$var,
+            &[
+                Token::UnitVariant{
+                    name: stringify!($enum),
+                    variant: $str,
+                },
+            ]
+        )
+    }
+}
 
-use tree::container::Container;
+mod obj;
+mod container;
+mod path;
+
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Story {
+pub(crate) struct Story {
     root: Container,
     #[serde(rename = "inkVersion")] v: u32,
     #[serde(rename = "listDefs")] flagsets: HashMap<String, HashMap<String, u32>>,
+}
+
+#[derive(Debug, PartialEq)]
+pub(crate) struct Container {
+    c: Vec<Tree>,
+    named_c: HashMap<String, Container>,
+    flags: u8,
+    name: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+#[serde(untagged)]
+pub(crate) enum Tree {
+    Node(Container),
+    Leaf(obj::Obj),
 }
 
 #[cfg(test)]
@@ -33,8 +49,7 @@ mod tests_serde {
 
     #[test]
     fn de_story_structure() {
-        use tree::Tree;
-        use tree::obj::*;
+        use super::obj::*;
         let st = Story {
             v: 17,
             flagsets: HashMap::new(),

@@ -1,4 +1,4 @@
-use tree::path::Path;
+use de::path::Path;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub(crate) enum VarRef {
