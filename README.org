@@ -17,6 +17,11 @@ Due to the non-linear nature of an ~ink~ story,
 variables can be initialized much later in the file
 than its first reference, or even outside of the story flow.
 
+The story deserialized here in ~story::Story~ is
+not yet useable as an ink story.
+It's the complete deserialized Json with more
+convenient types than ~serde_json::Value~ objects.
+
 ** TODO Deserialize
    - [X] Numbers
      - [X] Int Value
