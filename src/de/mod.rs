@@ -13,6 +13,9 @@ macro_rules! test_unit_variant_de {
     }
 }
 
+const INK_VERSION: u32 = 17;
+const INK_MIN_SUPPORTED: u32 = 16;
+
 mod obj;
 mod container;
 mod path;
@@ -22,7 +25,9 @@ use std::collections::HashMap;
 #[derive(Debug, PartialEq, Deserialize)]
 pub(crate) struct Story {
     root: Container,
-    #[serde(rename = "inkVersion")] v: u32,
+    #[serde(rename = "inkVersion")]
+    #[serde(deserialize_with = "de_ink_version")]
+    v: u32,
     #[serde(rename = "listDefs")] flagsets: HashMap<String, HashMap<String, u32>>,
 }
 
@@ -39,6 +44,26 @@ pub(crate) struct Container {
 pub(crate) enum Tree {
     Node(Container),
     Leaf(obj::Obj),
+}
+
+use serde::{Deserialize, Deserializer};
+use serde::de::Error;
+fn de_ink_version<'de, D>(d: D) -> Result<u32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let v = u32::deserialize(d)?;
+    if v > INK_VERSION {
+        Err(D::Error::custom(
+            "Story file was built for a newer version of Ink.",
+        ))
+    } else if v < INK_MIN_SUPPORTED {
+        Err(D::Error::custom(
+            "Story file was built for a much older version of Ink.",
+        ))
+    } else {
+        Ok(v)
+    }
 }
 
 #[cfg(test)]
