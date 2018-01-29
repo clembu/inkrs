@@ -1,4 +1,5 @@
 mod meta;
+use self::meta::Meta;
 use super::Tree;
 use std::collections::HashMap;
 
@@ -13,6 +14,16 @@ pub(crate) struct Container {
 impl Container {
     fn set_name(&mut self, n: Option<String>) {
         self.name = n;
+    }
+
+    #[cfg(test)]
+    pub fn with_flags(c: Vec<Tree>, flags: u8) -> Container {
+        Container {
+            c,
+            flags,
+            name: None,
+            named_c: HashMap::new(),
+        }
     }
 }
 
@@ -31,31 +42,40 @@ impl<'de> Visitor<'de> for ContainerVisitor {
     where
         A: de::SeqAccess<'de>,
     {
+        #[derive(Debug, PartialEq, Deserialize)]
+        #[serde(untagged)]
+        enum Contained {
+            Content(Tree),
+            Meta(Option<Meta>),
+        }
+
         let mut c: Vec<Tree> = Vec::new();
-        while let Some(k) = seq.size_hint() {
-            if k < 2 {
-                break;
-            }
-            if let Some(e) = seq.next_element::<Tree>()? {
-                c.push(e);
+        let mut m: Option<Meta> = None;
+        while let Some(cont) = seq.next_element::<Contained>()? {
+            match cont {
+                Contained::Content(t) => {
+                    c.push(t);
+                }
+                Contained::Meta(mt) => {
+                    m = mt;
+                    break;
+                }
             }
         }
 
-        if let Some(Some(m)) = seq.next_element::<Option<meta::Meta>>()? {
-            println!("Deser: {:?}", m);
-            Ok(Container {
-                c,
-                named_c: m.content,
-                flags: m.flags,
-                name: m.name,
-            })
-        } else {
-            Ok(Container {
+        match m {
+            None => Ok(Container {
                 c,
                 named_c: HashMap::new(),
                 flags: 0,
                 name: None,
-            })
+            }),
+            Some(m) => Ok(Container {
+                c,
+                named_c: m.content,
+                flags: m.flags,
+                name: m.name,
+            }),
         }
     }
 }
@@ -98,5 +118,42 @@ mod tests_serde {
                 Token::SeqEnd,
             ],
         );
+    }
+
+    #[test]
+    fn de_tree_nested_cont() {
+        let subc: Container = Container {
+            name: Some(String::from("c")),
+            flags: 0x03,
+            c: vec![Tree::Leaf(tree::obj::Obj::Cmd(tree::obj::cmd::Cmd::End))],
+            named_c: HashMap::new(),
+        };
+        let mut nc: HashMap<String, Container> = HashMap::new();
+        nc.insert(String::from("c"), subc);
+        assert_de_tokens(
+            &Container {
+                name: None,
+                flags: 0,
+                c: vec![Tree::Leaf(tree::obj::Obj::Cmd(tree::obj::cmd::Cmd::End))],
+                named_c: nc,
+            },
+            &[
+                Token::Seq { len: None },
+                Token::Str("end"),
+                Token::Some,
+                Token::Map { len: None },
+                Token::Str("c"),
+                Token::Seq { len: None },
+                Token::Str("end"),
+                Token::Some,
+                Token::Map { len: None },
+                Token::Str("#f"),
+                Token::U8(3),
+                Token::MapEnd,
+                Token::SeqEnd,
+                Token::MapEnd,
+                Token::SeqEnd,
+            ],
+        )
     }
 }
